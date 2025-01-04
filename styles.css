@@ -1,0 +1,106 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+#crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin-left: -10px;
+    margin-top: -10px;
+    pointer-events: none;
+}
+
+#crosshair::before,
+#crosshair::after {
+    content: "";
+    position: absolute;
+    background: black;
+}
+
+#crosshair::before {
+    width: 2px;
+    height: 20px;
+    left: 50%;
+    top: 0;
+    margin-left: -1px;
+}
+
+#crosshair::after {
+    width: 20px;
+    height: 2px;
+    left: 0;
+    top: 50%;
+    margin-top: -1px;
+}
+
+@keyframes cinematicText {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(50);
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        background-color: #000 ;
+    }
+
+    25% {
+        background-color: #000;
+    }
+
+    100% {
+        background-color: #00000000 ;
+    }
+}
+
+
+.banner {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.fade {
+    display: flex;
+    background: #000;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    animation: 5s fadeOut both cubic-bezier(0,0,1,1);
+    position: absolute;
+    z-index: 999999;
+}
+
+.banner h1 {
+    font: bold 22rem/1 Impact, sans-serif;
+    text-transform: uppercase;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.animate-text {
+    animation: 2s cinematicText both cubic-bezier(1,0,1,.5);
+}
+
+.banner canvas {
+    object-fit: cover;
+    position: absolute;
+    mix-blend-mode: multiply;
+}

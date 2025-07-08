@@ -11,8 +11,8 @@ export class RocketManager {
         this.rigidBodyDataMap = new Map();
         this.lastUserIndex = 0;
 
-        this.explosionRadius = 15;
-        this.explosionForce = 200;
+        this.explosionRadius = 10;
+        this.explosionForce = 10;
 
         this.enemyManager = enemyManager;
         this.soundManager = soundManager;

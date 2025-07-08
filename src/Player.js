@@ -187,7 +187,7 @@ export class Player {
         );
 
         const vxz = new THREE.Vector3(vel.x(), 0, vel.z());
-        const wishdir = wishVel.clone().normalize();
+        const wishdir = wishVel.lengthSq() > 0 ? wishVel.clone().normalize() : new THREE.Vector3();
         let wishspeed = wishVel.length() * this.airSettings.MaxSpeed;
 
         let accel = (vxz.dot(wishdir) < 0) ? this.airSettings.Deceleration : this.airSettings.Acceleration;
@@ -230,7 +230,7 @@ export class Player {
 
         this._applyFriction(1.0, delta, vxz);
 
-        const wishdir = wishVel.clone().normalize();
+        const wishdir = wishVel.lengthSq() > 0 ? wishVel.clone().normalize() : new THREE.Vector3();
         const wishspeed = wishVel.length() * this.groundSettings.MaxSpeed;
 
         this._accelerate(vxz, wishdir, wishspeed, this.groundSettings.Acceleration, delta);

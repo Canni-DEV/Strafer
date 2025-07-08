@@ -92,9 +92,9 @@ export class EnemyManager {
 
     spawnEnemy() {
         const spawnPosition = new THREE.Vector3(
-            Math.random() * 150 - 75,
+            Math.random() * 100 - 50,
             150,
-            Math.random() * 150 - 75
+            Math.random() * 100 - 50
         );
         const newEnemy = new Enemy(
             this.scene,

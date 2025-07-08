@@ -8,7 +8,6 @@ export class PhysicsWorld {
     }
 
     init(gravity = 26) {
-        // Configuración estándar para Ammo.js
         this.collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
         this.dispatcher = new Ammo.btCollisionDispatcher(this.collisionConfiguration);
         this.overlappingPairCache = new Ammo.btDbvtBroadphase();

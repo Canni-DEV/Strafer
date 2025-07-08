@@ -25,7 +25,6 @@ export class Game {
         this.mapBuilder = null;
         this.inputHandler = null;
         this.ui = null;
-
         this.enemyManager = null;
 
         this.lastTime = performance.now();
@@ -69,7 +68,7 @@ export class Game {
         this.inputHandler.init();
 
         const playerConfig = {
-            position: new THREE.Vector3(0, 128, 0),
+            position: new THREE.Vector3(0, 120, 0),
             gravity: 26,
             jumpForce: 12,
             friction: 6,
@@ -112,6 +111,10 @@ export class Game {
 
     start() {
         this.playing = true;
+    }
+
+    gameOver() {
+        this.playing = false;
     }
 
     animate() {

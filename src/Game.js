@@ -119,9 +119,10 @@ export class Game {
 
     animate() {
         const time = performance.now();
-        const delta = (time - this.lastTime) / 1000;
+        let delta = (time - this.lastTime) / 1000;
+        if (delta > 0.1) delta = 0.1;
         this.lastTime = time;
-        this.elapsedTime += delta;      
+        this.elapsedTime += delta;
         if(this.playing || this.firstFrame){
             this.physicsWorld.stepSimulation(delta);
             this.player.update(delta, this.inputHandler);

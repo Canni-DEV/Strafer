@@ -24,12 +24,16 @@ export class PhysicsWorld {
 
     stepSimulation(delta, maxSubSteps = 5) {
         if (!this.physicsWorld) return;
-        this.physicsWorld.stepSimulation(delta, maxSubSteps);
+        this.physicsWorld.stepSimulation(delta, maxSubSteps, delta);
     }
 
-    addRigidBody(body) {
+    addRigidBody(body, group = null, mask = null) {
         if (!this.physicsWorld) return;
-        this.physicsWorld.addRigidBody(body);
+        if (group !== null && mask !== null) {
+            this.physicsWorld.addRigidBody(body, group, mask);
+        } else {
+            this.physicsWorld.addRigidBody(body);
+        }
     }
 
     removeRigidBody(body) {

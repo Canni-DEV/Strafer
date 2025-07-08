@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 
+const COLLISION_GROUP_DEFAULT = 1;
+const COLLISION_GROUP_ROCKET = 2;
+
 export class RocketManager {
     constructor(scene, physicsWorld, inputHandler, player, enemyManager, soundManager) {
         this.scene = scene;
@@ -96,7 +99,11 @@ export class RocketManager {
         rocketBody.setFriction(1);
         rocketBody.setActivationState(4);
 
-        this.physicsWorld.addRigidBody(rocketBody);
+        this.physicsWorld.addRigidBody(
+            rocketBody,
+            COLLISION_GROUP_ROCKET,
+            COLLISION_GROUP_DEFAULT
+        );
 
         const launchSpeed = 150;
         const rocketVel = new Ammo.btVector3(forward.x * launchSpeed, forward.y * launchSpeed, forward.z * launchSpeed);
@@ -164,6 +171,7 @@ export class RocketManager {
             const isRocket1 = userData1?.isRocket === true;
 
             if (!isRocket0 && !isRocket1) continue;
+            if (isRocket0 && isRocket1) continue;
 
             const numContacts = contactManifold.getNumContacts();
             for (let j = 0; j < numContacts; j++) {

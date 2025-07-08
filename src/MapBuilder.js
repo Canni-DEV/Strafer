@@ -6,6 +6,8 @@ export class MapBuilder {
         this.physicsWorld = physicsWorld;
         this.gridTexture = this._createGridTexture();
         this.platforms = []
+        this.geometryCache = new Map();
+        this.shapeCache = new Map();
     }
 
     createMap() {
@@ -24,7 +26,12 @@ export class MapBuilder {
     }
 
     createBoxPlatform(x, y, z, sx, sy, sz, color) {
-        const floorGeometry = new THREE.BoxGeometry(sx, sy, sz);
+        const geomKey = `b_${sx}_${sy}_${sz}`;
+        let floorGeometry = this.geometryCache.get(geomKey);
+        if (!floorGeometry) {
+            floorGeometry = new THREE.BoxGeometry(sx, sy, sz);
+            this.geometryCache.set(geomKey, floorGeometry);
+        }
 
         const divisions = 8;
         const desiredCellSize = 2;
@@ -43,7 +50,12 @@ export class MapBuilder {
         floorMesh.position.set(x, y + sy / 2, z);
         this.scene.add(floorMesh);
         this.platforms.push(floorMesh);
-        const shape = new Ammo.btBoxShape(new Ammo.btVector3(sx * 0.5, sy * 0.5, sz * 0.5));
+        const shapeKey = `bs_${sx}_${sy}_${sz}`;
+        let shape = this.shapeCache.get(shapeKey);
+        if (!shape) {
+            shape = new Ammo.btBoxShape(new Ammo.btVector3(sx * 0.5, sy * 0.5, sz * 0.5));
+            this.shapeCache.set(shapeKey, shape);
+        }
         const transform = new Ammo.btTransform();
         transform.setIdentity();
         transform.setOrigin(new Ammo.btVector3(x, y + sy / 2, z));
@@ -57,7 +69,12 @@ export class MapBuilder {
     }
 
     createCirclePlatform(x, y, z, r, sy, color) {
-        const floorGeometry = new THREE.CylinderGeometry(r, r, sy, 32);
+        const geomKey = `c_${r}_${sy}`;
+        let floorGeometry = this.geometryCache.get(geomKey);
+        if (!floorGeometry) {
+            floorGeometry = new THREE.CylinderGeometry(r, r, sy, 32);
+            this.geometryCache.set(geomKey, floorGeometry);
+        }
 
         const divisions = 8;
         const desiredCellSize = 2;
@@ -75,7 +92,12 @@ export class MapBuilder {
         floorMesh.position.set(x, y + sy / 2, z);
         this.scene.add(floorMesh);
         this.platforms.push(floorMesh);
-        const shape = new Ammo.btCylinderShape(new Ammo.btVector3(r, sy * 0.5, r));
+        const shapeKey = `cs_${r}_${sy}`;
+        let shape = this.shapeCache.get(shapeKey);
+        if (!shape) {
+            shape = new Ammo.btCylinderShape(new Ammo.btVector3(r, sy * 0.5, r));
+            this.shapeCache.set(shapeKey, shape);
+        }
         const transform = new Ammo.btTransform();
         transform.setIdentity();
         transform.setOrigin(new Ammo.btVector3(x, y + sy / 2, z));

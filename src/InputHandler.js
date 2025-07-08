@@ -5,9 +5,13 @@ export class InputHandler {
             backward: false,
             left: false,
             right: false,
-            jump: false,
-            shootRocket: false
+            jump: false
         };
+
+        this.shootHeld = false;
+        this.shootPressTime = 0;
+        this.justReleased = false;
+        this.lastClickDuration = 0;
 
         this._onKeyDown = this._onKeyDown.bind(this);
         this._onKeyUp = this._onKeyUp.bind(this);
@@ -64,17 +68,21 @@ export class InputHandler {
 
     _onMouseDown(event) {
         // 0 = left click, 1 = middle, 2 = right click
-        if (event.button === 0) { 
-            this.actions.shootRocket = true;
+        if (event.button === 0) {
+            this.shootHeld = true;
+            this.shootPressTime = performance.now();
+            this.justReleased = false;
         }
-        if (event.button === 2) { 
+        if (event.button === 2) {
             this.actions.jump = true;
         }
     }
 
     _onMouseUp(event) {
-        if (event.button === 0) { 
-            this.actions.shootRocket = false;
+        if (event.button === 0) {
+            this.shootHeld = false;
+            this.lastClickDuration = performance.now() - this.shootPressTime;
+            this.justReleased = true;
         }
         if (event.button === 2) {
             this.actions.jump = false;
@@ -91,6 +99,19 @@ export class InputHandler {
     }
 
     clearShoot() {
-        this.actions.shootRocket = false;
+        this.shootHeld = false;
+        this.justReleased = false;
+    }
+
+    isShootHeld() {
+        return this.shootHeld;
+    }
+
+    consumeShootRelease() {
+        if (this.justReleased) {
+            this.justReleased = false;
+            return this.lastClickDuration;
+        }
+        return null;
     }
 }

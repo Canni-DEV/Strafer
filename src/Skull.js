@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export class Enemy {
+export class Skull {
     constructor(scene, player, spawnPosition, enemySpeed = 5, turnSpeed = 1, enemies = [], platforms = [], audioListener = null, flyBuffer = null, meshSkull = null) {
         this.scene = scene;
         this.player = player;

@@ -16,16 +16,35 @@ export class RocketManager {
 
         this.enemyManager = enemyManager;
         this.soundManager = soundManager;
+
+        this.autoInterval = 0.15;
+        this.autoTimer = 0;
+        this.shotgunCooldown = 1;
+        this.lastShotgunTime = -Infinity;
     }
 
     init() {
     }
 
-    update(delta) {
-        if (this.inputHandler.isKeyDown('shootRocket')) {
-            this.soundManager.playSound('shoot', 0.5, false);
-            this.shootRocket();
-            this.inputHandler.clearShoot();
+    update(delta, elapsedTime) {
+        if (this.inputHandler.isShootHeld()) {
+            this.autoTimer += delta;
+            if (this.autoTimer >= this.autoInterval) {
+                this.autoTimer = 0;
+                this.soundManager.playSound('shoot', 0.5, false);
+                this.shootRocket();
+            }
+        } else {
+            this.autoTimer = 0;
+        }
+
+        const releaseDuration = this.inputHandler.consumeShootRelease();
+        if (releaseDuration !== null && releaseDuration < 200) {
+            if (elapsedTime - this.lastShotgunTime >= this.shotgunCooldown) {
+                this.lastShotgunTime = elapsedTime;
+                this.soundManager.playSound('shoot', 0.5, false);
+                this.shootShotgun();
+            }
         }
 
         this.updateRockets();
@@ -35,9 +54,12 @@ export class RocketManager {
         this.cleanupRockets();
     }
 
-    shootRocket() {
-        const forward = new THREE.Vector3();
-        this.player.camera.getWorldDirection(forward);
+    shootRocket(dir = null) {
+        const forward = dir ? dir.clone() : (() => {
+            const v = new THREE.Vector3();
+            this.player.camera.getWorldDirection(v);
+            return v;
+        })();
         forward.normalize();
 
         const spawnPos = this.player.position.clone().add(forward.clone().multiplyScalar(2));
@@ -84,6 +106,19 @@ export class RocketManager {
         const userIndex = ++this.lastUserIndex;
         rocketBody.setUserIndex(userIndex);
         this.rigidBodyDataMap.set(userIndex, { isRocket: true, threeMesh: rocketMesh });
+    }
+
+    shootShotgun() {
+        const count = 6;
+        const spread = 0.2;
+        for (let i = 0; i < count; i++) {
+            const angleOffset = (Math.random() - 0.5) * spread;
+            const quat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), angleOffset);
+            const forward = new THREE.Vector3();
+            this.player.camera.getWorldDirection(forward);
+            forward.applyQuaternion(quat).normalize();
+            this.shootRocket(forward);
+        }
     }
 
     updateRockets() {

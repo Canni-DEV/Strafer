@@ -125,7 +125,7 @@ export class Game {
         if(this.playing || this.firstFrame){
             this.physicsWorld.stepSimulation(delta);
             this.player.update(delta, this.inputHandler);
-            this.rocketManager.update(delta);
+            this.rocketManager.update(delta, this.elapsedTime);
             this.enemyManager.update(delta, this.elapsedTime);
             this.itemManager.update(delta);
             this.ui.updateStats();
